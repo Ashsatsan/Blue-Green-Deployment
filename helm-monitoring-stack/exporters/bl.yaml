@@ -1,0 +1,6 @@
+blackboxExporter:
+  serviceMonitor:
+    enabled: true
+    namespace: monitoring  # or the namespace Prometheus is in
+    interval: 30s  # Scrape interval
+

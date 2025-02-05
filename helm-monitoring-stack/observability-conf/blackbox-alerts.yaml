@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: example-rules
+    role: alert-rules
+  name: blackbox-alerts
+spec:
+  groups:
+    - name: blackbox_group
+      rules:
+        - alert: blackbox_exporter_down
+          expr: up{job="blackbox-exporter"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: Blackbox exporter is down or unreachable for more than 5 minutes.
+            summary: Blackbox exporter is down
+            type: Exporter
+          
+        - alert: blackbox_probe_http_latency_high
+          expr: probe_http_duration_seconds{job="blackbox-exporter", result="success"} > 2
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            description: HTTP probe latency is high for more than 2 minutes.
+            summary: High HTTP probe latency
+            type: Latency
+          
+        - alert: blackbox_probe_http_timeout
+          expr: probe_http_duration_seconds{job="blackbox-exporter", result="timeout"} > 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            description: HTTP probe is timing out for more than 2 minutes.
+            summary: HTTP probe timeout
+            type: Timeout
+          
+        - alert: blackbox_probe_http_failed
+          expr: probe_http_duration_seconds{job="blackbox-exporter", result="failure"} > 0
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            description: HTTP probe failed for more than 2 minutes.
+            summary: HTTP probe failure
+            type: Failure
+

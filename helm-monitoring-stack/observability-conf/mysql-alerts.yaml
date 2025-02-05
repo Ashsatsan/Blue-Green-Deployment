@@ -1,0 +1,51 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  labels:
+    prometheus: example-rules
+    role: alert-rules
+  name: mysql-alerts
+spec:
+  groups:
+    - name: mysql_group
+      rules:
+        - alert: mysql_exporter_down
+          expr: up{job="mysql-exporter"} == 0
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: MySQL exporter is down or unreachable for more than 5 minutes.
+            summary: MySQL exporter is down
+            type: Exporter
+          
+        - alert: mysql_query_latency_high
+          expr: mysql_global_status_seconds_behind_master{job="mysql-exporter"} > 5
+          for: 2m
+          labels:
+            severity: critical
+          annotations:
+            description: MySQL replication is more than 5 seconds behind master for more than 2 minutes.
+            summary: High MySQL replication lag
+            type: Replication
+          
+        - alert: mysql_connection_count_high
+          expr: mysql_global_status_threads_connected{job="mysql-exporter"} > 100
+          for: 2m
+          labels:
+            severity: warning
+          annotations:
+            description: MySQL has more than 100 connections for more than 2 minutes.
+            summary: High MySQL connection count
+            type: Connection
+          
+        - alert: mysql_disk_space_low
+          expr: mysql_innodb_data_free{job="mysql-exporter"} / mysql_innodb_data_total{job="mysql-exporter"} < 0.1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            description: MySQL disk space usage is greater than 90% for more than 5 minutes.
+            summary: Low MySQL disk space
+            type: Disk
+
