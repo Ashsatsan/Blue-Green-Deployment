@@ -147,7 +147,54 @@ Before setting up the project, ensure you have the following:
 
 ---
 
-### **6. Configure Alerts**
+### **6. Monitoring Stack Configuration**
+The monitoring stack is deployed using the **Prometheus Stack Helm Chart**. The `prom-values.yaml` file contains custom configurations to ensure Prometheus scrapes metrics from all `ServiceMonitors` in the cluster.
+
+#### **Key Configuration in `prom-values.yaml`**
+1. **Service Monitor Scraping**:
+   By default, Prometheus only scrapes `ServiceMonitors` created by the Helm chart itself. To allow Prometheus to scrape metrics from all `ServiceMonitors` (e.g., MySQL Exporter, Blackbox Exporter), you need to set the following parameter in `prom-values.yaml`:
+   ```yaml
+   prometheus:
+     prometheusSpec:
+       serviceMonitorSelectorNilUsesHelmValues: false
+       serviceMonitorSelector: {}
+       serviceMonitorNamespaceSelector: {}
+   ```
+   - **`serviceMonitorSelectorNilUsesHelmValues: false`**: Ensures Prometheus considers all `ServiceMonitors` in the cluster, not just those created by the Helm chart.
+   - **`serviceMonitorSelector: {}`**: Allows Prometheus to select all `ServiceMonitors` without filtering.
+   - **`serviceMonitorNamespaceSelector: {}`**: Ensures Prometheus scrapes `ServiceMonitors` across all namespaces.
+
+2. **Grafana Integration**:
+   Grafana is configured to include Loki as a data source for log aggregation:
+   ```yaml
+   grafana:
+     sidecar:
+       datasources:
+         defaultDatasourceEnabled: true
+     additionalDataSources:
+       - name: Loki
+         type: loki
+         url: http://loki-loki-distributed-query-frontend.monitoring:3100
+   ```
+
+#### **Steps to Apply the Configuration**
+1. Navigate to the `helm-monitoring-stack/observability-conf` directory:
+   ```bash
+   cd helm-monitoring-stack/observability-conf
+   ```
+2. Update the `prom-values.yaml` file with the above configurations.
+3. Deploy the Prometheus Stack Helm chart with the custom values:
+   ```bash
+   helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+   helm install prometheus-stack prometheus-community/kube-prometheus-stack -f prom-values.yaml
+   ```
+
+#### **Why This Matters**
+Setting `serviceMonitorSelectorNilUsesHelmValues: false` ensures that Prometheus automatically discovers and scrapes metrics from all `ServiceMonitors` in the cluster. Without this configuration, you would need to manually label each `ServiceMonitor`, which can be error-prone and cumbersome.
+
+---
+
+### **7. Configure Alerts**
 1. Define alerts in the `alertmanager-config.yml` file:
    ```yaml
    groups:
@@ -169,7 +216,7 @@ Before setting up the project, ensure you have the following:
 
 ---
 
-### **7. Execute Kubernetes Resources**
+### **8. Execute Kubernetes Resources**
 For beginners, here’s how to apply Kubernetes manifests:
 1. Navigate to the `kubernetes-manifest` directory:
    ```bash
@@ -230,3 +277,7 @@ For beginners, here’s how to apply Kubernetes manifests:
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
 ---
+
+## **License**
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
