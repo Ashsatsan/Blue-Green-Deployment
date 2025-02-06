@@ -123,8 +123,7 @@ Before setting up the project, ensure you have the following:
        </repository>
    </distributionManagement>
    ```
-   - Verify the artifact inside the nexus after cicd completion  
- ![Project Diagram](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/jenkins-rbac-promethues.png?raw=true)  
+  
 ---
 
 ### **5. Deploy Monitoring Stack**
@@ -269,7 +268,7 @@ b.Once trivy exporter experience any issue with its metrics it will start trigge
 
   ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/alert-2.png?raw=true) 
 
-c.After 2 mins or around it will shoot a alert trigger via provided handles 
+c.After 2 mins or around it will shoot a alert trigger to the provided handles 
 
   ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/alert-1.png?raw=true) 
 
