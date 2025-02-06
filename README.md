@@ -1,6 +1,6 @@
 # **Blue-Green Deployment on Kubernetes with CI/CD Pipeline**
 
-![Project Diagram](./path-to-your-diagram.png)  
+![Project Diagram](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/jenkins-rbac-promethues.png?raw=true)  
 *(Replace `path-to-your-diagram.png` with the actual path to your attached project stack diagram.)*
 
 ## **Overview**
