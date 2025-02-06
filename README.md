@@ -1,7 +1,7 @@
 # **Blue-Green Deployment on Kubernetes with CI/CD Pipeline**
 
 ![Project Diagram](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/jenkins-rbac-promethues.png?raw=true)  
-*(Replace `path-to-your-diagram.png` with the actual path to your attached project stack diagram.)*
+
 
 ## **Overview**
 This project demonstrates a **Blue-Green Deployment Strategy** using **Kubernetes**, **Jenkins CI/CD**, and **AWS EKS**. It includes infrastructure provisioning via **Terraform**, role-based access control (RBAC), and monitoring/alerting with **Prometheus**, **Grafana**, **Loki**, and **Alertmanager**. The pipeline ensures zero-downtime deployments, security scans, and automated traffic switching between environments.
@@ -123,7 +123,8 @@ Before setting up the project, ensure you have the following:
        </repository>
    </distributionManagement>
    ```
-
+   - Verify the artifact inside the nexus after cicd completion  
+ ![Project Diagram](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/jenkins-rbac-promethues.png?raw=true)  
 ---
 
 ### **5. Deploy Monitoring Stack**
@@ -258,6 +259,47 @@ For beginners, here’s how to apply Kubernetes manifests:
 2. **Alerts**:
    - Alerts are triggered for HTTP/HTTPS failures, MySQL performance issues, and security vulnerabilities.
    - Notifications are sent via email using Alertmanager.
+   - After intigrating trivy with the alert manager and the prometheus it will work like the following images:
+
+a. Firstly after prometheus will start scraping exporter inside the alert section we will be able to alerts that we configured to target
+
+  ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/alert-3.png?raw=true)  
+
+b.Once trivy exporter experience any issue with its metrics it will start triggering the alert
+
+  ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/alert-2.png?raw=true) 
+
+c.After 2 mins or around it will shoot a alert trigger via provided handles 
+
+  ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/alert-1.png?raw=true) 
+
+d. Similarly we have also set the alerts to the database using mysql exporter and blackbox exporter for the actively probing external endpoints 
+  
+  ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/alert-4.png?raw=true) 
+
+  
+---
+
+## Results to verify
+
+1. Before executing the pipeline verify if the blue and green version choosing option appear on the jenkins console before apply build
+
+     ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/blue5.png?raw=true)
+     
+2. After pipeline success check if the sonarqube scanning the code correctly, if caught any issue check jenkins console log and also verify if the sonarqube integration and credentails also the tools resources are managed properly
+
+     ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/blue3.png?raw=true)
+    
+     ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/blue2.png?raw=true)
+
+3. Also verify the artifact appeared in the nexus repository or not
+
+    ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/nexus%20rep.png?raw=true)   
+
+4. Lastly, after successfully running one version for example blue try to run the app green version too . During execution the pipeline will switch the traffic and it will be observed in build process.
+   Note that: in the given image we can see that its indicated failed but in contrary its just a lag and the code is also bit outdated.So if you caught and then dont worry pipeline got successfully run 
+ 
+   ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/blue4.png?raw=true)      
 
 ---
 
@@ -278,6 +320,4 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 
 ---
 
-## **License**
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
