@@ -296,9 +296,10 @@ d. Similarly we have also set the alerts to the database using mysql exporter an
     ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/nexus%20rep.png?raw=true)   
 
 4. Lastly, after successfully running one version for example blue try to run the app green version too . During execution the pipeline will switch the traffic and it will be observed in build process.
-   Note that: in the given image we can see that its indicate failure but in contrary success in its build process , though its just a lag and the code is also a bit outdated.So if you caught this then no issue as soon as build process is successfully run. 
+   Note that: During the build process it might give you an failed status error eventhough the build process gets successfully completed,so this please wait for couple of minutes if the error still persist check the logs of console, the issue is likely due to some lag 
+   in the code or some outdated versions are being used inside the code. 
  
-   ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/blue4.png?raw=true)      
+   ![Image alt](https://github.com/Ashsatsan/Blue-Green-Deployment/blob/main/images/success.png?raw=true)      
 
 ---
 
